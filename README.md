@@ -1,6 +1,6 @@
 # zg
 	
-ver 1.0.2 | last updated: 2020-07-22
+ver 1.0.3 | last updated: 2020-07-22
 
 Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that contains a collection of useful methods that may help automating routine dev tasks.
 

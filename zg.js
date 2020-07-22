@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.2 | last updated: 2020-07-22
+	ver 1.0.3 | last updated: 2020-07-22
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.2 | last updated: 2020-07-22';
+		mdl.version = 'ver 1.0.3 | last updated: 2020-07-22';
 
 		mdl.help = function() {
 			console.table([	["zg().help()", "return the list of available methods"],
@@ -111,7 +111,7 @@ var zg = function() {
 			if (form_ids) {
 				function hideFormIds(form_ids) { // initiaite the filtering logic
 					// remove the currently ticket form from the list of form IDs
-					form_ids = form_ids.splice(form_ids.indexOf(mdl.getTicketFormID()), 1);
+					form_ids.splice(form_ids.indexOf(mdl.getTicketFormID()), 1);
 					attachFormSelectorListeners(form_ids);
 				}
 				function attachFormSelectorListeners(form_ids) { // attach event listener to a child List under nesty-panel (this is how Help Center ticket form field dropdown is rendered)

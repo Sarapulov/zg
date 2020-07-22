@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.1 | last updated: 2020-06-09
+	ver 1.0.2 | last updated: 2020-07-22
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.1 | last updated: 2020-06-09';
+		mdl.version = 'ver 1.0.2 | last updated: 2020-07-22';
 
 		mdl.help = function() {
 			console.table([	["zg().help()", "return the list of available methods"],
@@ -27,7 +27,9 @@ var zg = function() {
 							["zg().isThisTheFormID('12345')", "TRUE if passed ID is matching the current ticket form ID"],
 							["zg().hasAnyUserTag(['test','/office:/'])", "TRUE if current user has at least one of the tags OR at least one tag is matching the pattern"],
 							["zg().hasAllUserTag(['test','/office:/'])", "TRUE if current user has all tags OR all tags are matching the pattern"],
-							["zg().getUserLocale()", "return current user locale from Help Center HTML"]
+							["zg().getUserLocale()", "return current user locale from Help Center HTML"],
+							["zg().getAllTicketFormIDs()", "return all available ticket form IDs"],
+							["zg().hideTicketFormIDs(['123','456'])", "will hide listed ticket form IDs from the Ticket Form Selector"],
 						]);
 		}
 	   	mdl.isTicketFormSelectorPage = function(){ // is this ticket form selector page
@@ -36,7 +38,7 @@ var zg = function() {
 	   	}
 	   	mdl.isTicketFormPage = function() { // is this actual ticket form page
 	   		var form = document.getElementById('new_request');
-	   		return (window.location.href.indexOf('/requests') > -1) && form && form.getElementsByTagName('footer') && form.getElementsByTagName('footer').length > 0;
+	   		return !!((window.location.href.indexOf('/requests') > -1) && form && form.getElementsByTagName('footer') && (form.getElementsByTagName('footer').length > 0));
 	   	}
 	   	mdl.getTicketFormID = function() { // return ticket form ID
 	   		return document.getElementById('request_issue_type_select').value || document.getElementById('request_ticket_form_id').value;
@@ -89,6 +91,52 @@ var zg = function() {
 	   	mdl.getUserLocale = function() { // return user locale from the URL
 	   		var html = document.getElementsByTagName('html')[0];
 			return html && html.attributes && html.attributes.lang && html.attributes.lang.value.toLowerCase();
+		}
+		mdl.getAllTicketFormIDs = function() { // return an array of all available ticket form IDs as strings
+			var allFormIds = [];
+			var formSelector = document.getElementById('request_issue_type_select');
+			if (formSelector) {
+				formSelector && formSelector.childNodes.forEach(function(node){
+					if (node.nodeName && node.nodeName == 'OPTION' && node.value !== '-') allFormIds.push(node.value);
+				});
+			} else {
+				allFormIds.push(document.getElementById('request_ticket_form_id').value);
+			}
+	   		return allFormIds;
+	   	}
+	   	
+	   	// TODO: Remove jQuery dependency
+	   	
+	   	mdl.hideTicketFormIDs = function(form_ids){
+			if (form_ids) {
+				function hideFormIds(form_ids) { // initiaite the filtering logic
+					// remove the currently ticket form from the list of form IDs
+					form_ids = form_ids.splice(form_ids.indexOf(mdl.getTicketFormID()), 1);
+					attachFormSelectorListeners(form_ids);
+				}
+				function attachFormSelectorListeners(form_ids) { // attach event listener to a child List under nesty-panel (this is how Help Center ticket form field dropdown is rendered)
+					var targetNodes = document.getElementsByClassName('nesty-panel');
+					for (var i=0; i < targetNodes.length; i++) {
+						var observer = new MutationObserver(function(mutationsList, observer) {
+							handleTicketFormClick(mutationsList, form_ids);
+						});
+						observer.observe(targetNodes[i], { attributes: false, childList: true, subtree: false });
+					}
+				}
+				function handleTicketFormClick(mutationsList, form_ids) { // when dropdown list shows up this will remove unwanted form IDs and keep the one in @form_ids
+					var $nestyPanel = jQuery(mutationsList[0].target);
+
+					if (!$nestyPanel.find('ul').attr('aria-labelledby')) { // checks if nesty pannel is not from a custom dropdown
+						$nestyPanel.find('li').each(function(index, form) {
+							var id = jQuery(form).attr('id');
+							if ( (id !== '-') && (form_ids.indexOf(id) > -1) ) jQuery(form).remove();
+						});
+					}
+				}
+				hideFormIds(form_ids);
+			} else {
+				console.warn('zg.js - no ticket form IDs were passed to hideTicketFormIDs function');
+			}
 		}
 
 	   	return mdl;

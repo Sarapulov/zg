@@ -16,5 +16,6 @@ Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that con
 "zg().hasAllUserTag(['test','/office:/'])" = "TRUE if current user has all tags OR all tags are matching the pattern"
 "zg().getUserLocale()" = "return current user locale from Help Center HTML"
 "zg().getAllTicketFormIDs()" = "return all available ticket form IDs"
+"zg().hideTicketFormIDs(['123','456'])" = "will hide listed ticket form IDs from the Ticket Form Selector"
 
 ```

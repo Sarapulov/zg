@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.3 | last updated: 2020-07-22
+	ver 1.0.4 | last updated: 2020-07-23
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.3 | last updated: 2020-07-22';
+		mdl.version = 'ver 1.0.4 | last updated: 2020-07-23';
 
 		mdl.help = function() {
 			console.table([	["zg().help()", "return the list of available methods"],
@@ -29,7 +29,7 @@ var zg = function() {
 							["zg().hasAllUserTag(['test','/office:/'])", "TRUE if current user has all tags OR all tags are matching the pattern"],
 							["zg().getUserLocale()", "return current user locale from Help Center HTML"],
 							["zg().getAllTicketFormIDs()", "return all available ticket form IDs"],
-							["zg().hideTicketFormIDs(['123','456'])", "will hide listed ticket form IDs from the Ticket Form Selector"],
+							["zg().hideTicketFormIDs(['123','456'])", "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form"],
 						]);
 		}
 	   	mdl.isTicketFormSelectorPage = function(){ // is this ticket form selector page
@@ -104,14 +104,11 @@ var zg = function() {
 			}
 	   		return allFormIds;
 	   	}
-	   	
-	   	// TODO: Remove jQuery dependency
-	   	
 	   	mdl.hideTicketFormIDs = function(form_ids){
 			if (form_ids) {
 				function hideFormIds(form_ids) { // initiaite the filtering logic
 					// remove the currently ticket form from the list of form IDs
-					form_ids.splice(form_ids.indexOf(mdl.getTicketFormID()), 1);
+					form_ids = form_ids.filter(function(e) { return e !== mdl.getTicketFormID() })
 					attachFormSelectorListeners(form_ids);
 				}
 				function attachFormSelectorListeners(form_ids) { // attach event listener to a child List under nesty-panel (this is how Help Center ticket form field dropdown is rendered)
@@ -124,13 +121,11 @@ var zg = function() {
 					}
 				}
 				function handleTicketFormClick(mutationsList, form_ids) { // when dropdown list shows up this will remove unwanted form IDs and keep the one in @form_ids
-					var $nestyPanel = jQuery(mutationsList[0].target);
-
-					if (!$nestyPanel.find('ul').attr('aria-labelledby')) { // checks if nesty pannel is not from a custom dropdown
-						$nestyPanel.find('li').each(function(index, form) {
-							var id = jQuery(form).attr('id');
-							if ( (id !== '-') && (form_ids.indexOf(id) > -1) ) jQuery(form).remove();
-						});
+					var ulLabel = mutationsList[0].target.querySelectorAll('ul[aria-labelledby]');
+					if (!(ulLabel && ulLabel.length)) {
+						mutationsList[0].target.querySelectorAll('li').forEach(function(element) {
+							if ( (element.id !== '-') && (form_ids.indexOf(element.id) > -1) ) element.remove();
+						})
 					}
 				}
 				hideFormIds(form_ids);

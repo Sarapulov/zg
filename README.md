@@ -1,6 +1,6 @@
 # zg
 	
-ver 1.0.3 | last updated: 2020-07-22
+ver 1.0.4 | last updated: 2020-07-23
 
 Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that contains a collection of useful methods that may help automating routine dev tasks.
 
@@ -16,6 +16,6 @@ Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that con
 "zg().hasAllUserTag(['test','/office:/'])" = "TRUE if current user has all tags OR all tags are matching the pattern"
 "zg().getUserLocale()" = "return current user locale from Help Center HTML"
 "zg().getAllTicketFormIDs()" = "return all available ticket form IDs"
-"zg().hideTicketFormIDs(['123','456'])" = "will hide listed ticket form IDs from the Ticket Form Selector"
+"zg().hideTicketFormIDs(['123','456'])" = "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form"
 
 ```

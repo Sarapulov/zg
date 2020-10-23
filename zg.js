@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.6 | last updated: 2020-10-23
+	ver 1.0.7 | last updated: 2020-10-23
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.6 | last updated: 2020-10-23';
+		mdl.version = 'ver 1.0.7 | last updated: 2020-10-23';
 
 		mdl.help = function() {
 			console.table({
@@ -30,7 +30,7 @@ var zg = function() {
 							["zg().hasAllUserTag(['test','/office:/'])"]			: "TRUE if current user has all tags OR all tags are matching the pattern",
 							["zg().hasUserNoneOfTheseTags(['test','/office:/'])"]	: "TRUE if current user has none of tags OR no tags are matching the pattern",
 							["zg().getUserLocale()"]								: "return current user locale from Help Center HTML",
-							["zg().getAllTicketFormIDs()"]							: "return all available ticket form IDs",
+							["zg().getAllTicketFormIDs()"]							: "return all available ticket form IDs. Should be used on the new_request_page.hbs",
 							["zg().hideTicketFormIDs(['123','456'])"]				: "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form",
 							["zg().ifUrlContainsAny(['en','us'])"]					: "TRUE if either of the strings are available in the current URL. window.location.href is used to define the URL",
 							["zg().ifUrlContainsAll(['en','us'])"]					: "TRUE if all of the strings are available in the current URL. window.location.href is used to define the URL",

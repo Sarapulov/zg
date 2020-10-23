@@ -1,8 +1,40 @@
 # zg
 	
-ver 1.0.6 | last updated: 2020-10-23
+## ver 1.0.7 | last updated: 2020-10-23
 
 Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that contains a collection of useful methods that may help automating routine dev tasks.
+
+## how to load
+
+For the latest version
+
+```
+<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg/zg.min.js"></script>
+```
+
+For more specific version
+
+```
+<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg@1.0.7/zg.min.js"></script>
+```
+
+## how to use
+
+
+Load the library to Help Center pages and the use one of the following methods after a page is loaded.
+
+
+```
+document.addEventListener('DOMContentLoaded', function() {
+
+	if (zg().hasAnyUserTag(['test','/office:/'])) {
+		console.log('This is a test user!');
+	}
+
+})
+```
+
+## methods
 
 ```
 

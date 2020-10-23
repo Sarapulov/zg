@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.5 | last updated: 2020-08-20
+	ver 1.0.6 | last updated: 2020-10-23
 
 	OVERVIEW:
 
@@ -16,24 +16,25 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.5 | last updated: 2020-08-20';
+		mdl.version = 'ver 1.0.6 | last updated: 2020-10-23';
 
 		mdl.help = function() {
 			console.table({
-							["zg().help()"]									:"return the list of available methods",
-							["zg().version"]								: "return current version of the 'zg' library",
-							["zg().isTicketFormSelectorPage()"]				: "TRUE if current page is a form selector page",
-							["zg().isTicketFormPage()"]						: "TRUE if current page is the actual ticket form",
-							["zg().getTicketFormID()"]						: "return currently selected ticket form ID as a string",
-							["zg().isThisTheFormID('12345')"]				: "TRUE if passed ID is matching the current ticket form ID",
-							["zg().hasAnyUserTag(['test','/office:/'])"]	: "TRUE if current user has at least one of the tags OR at least one tag is matching the pattern",
-							["zg().hasAllUserTag(['test','/office:/'])"]	: "TRUE if current user has all tags OR all tags are matching the pattern",
-							["zg().getUserLocale()"]						: "return current user locale from Help Center HTML",
-							["zg().getAllTicketFormIDs()"]					: "return all available ticket form IDs",
-							["zg().hideTicketFormIDs(['123','456'])"]		: "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form",
-							["zg().ifUrlContainsAny(['en','us'])"]			: "TRUE if either of the strings are available in the current URL. window.location.href is used to define the URL",
-							["zg().ifUrlContainsAll(['en','us'])"]			: "TRUE if all of the strings are available in the current URL. window.location.href is used to define the URL",
-							["zg().isVisitorLogin()"]						: "TRUE if current visitor is login to Help Center. Should be called after page is loaded."
+							["zg().help()"]											:"return the list of available methods",
+							["zg().version"]										: "return current version of the 'zg' library",
+							["zg().isTicketFormSelectorPage()"]						: "TRUE if current page is a form selector page",
+							["zg().isTicketFormPage()"]								: "TRUE if current page is the actual ticket form",
+							["zg().getTicketFormID()"]								: "return currently selected ticket form ID as a string",
+							["zg().isThisTheFormID('12345')"]						: "TRUE if passed ID is matching the current ticket form ID",
+							["zg().hasAnyUserTag(['test','/office:/'])"]			: "TRUE if current user has at least one of the tags OR at least one tag is matching the pattern",
+							["zg().hasAllUserTag(['test','/office:/'])"]			: "TRUE if current user has all tags OR all tags are matching the pattern",
+							["zg().hasUserNoneOfTheseTags(['test','/office:/'])"]	: "TRUE if current user has none of tags OR no tags are matching the pattern",
+							["zg().getUserLocale()"]								: "return current user locale from Help Center HTML",
+							["zg().getAllTicketFormIDs()"]							: "return all available ticket form IDs",
+							["zg().hideTicketFormIDs(['123','456'])"]				: "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form",
+							["zg().ifUrlContainsAny(['en','us'])"]					: "TRUE if either of the strings are available in the current URL. window.location.href is used to define the URL",
+							["zg().ifUrlContainsAll(['en','us'])"]					: "TRUE if all of the strings are available in the current URL. window.location.href is used to define the URL",
+							["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded."
 						});
 
 		}
@@ -94,6 +95,27 @@ var zg = function() {
 				});
 	   		}
 	   		return !!hasAllTags && !!hasAllTags.length && (hasAllTags.length == listOfUserTags.length);
+	   	}
+	   	mdl.hasUserNoneOfTheseTags = function(listOfUserTags) { // return TRUE if Help Center user has none of the tags or tag patterns listed in the array. All tags must not exist
+	   		var hasAllTags,
+	   			h = HelpCenter,
+	   			hasHelpCenter = h && h.user,
+	   			hasTags = h.user.tags && h.user.tags.length;
+	   		
+	   		if (listOfUserTags && hasTags) {
+	   			hasAllTags = listOfUserTags.filter(function(n) {
+				    var isMatchPattern;
+
+	   				if (n.indexOf('/') > -1) {
+	   					var re = new RegExp(n.replace(/\//g, ''));
+	   					for (var i = 0; i < h.user.tags.length; i++) {
+	   						if (re.test(h.user.tags[i])) isMatchPattern = true;
+	   					}
+	   				}
+				    return listOfUserTags.length && (h.user.tags.indexOf(n) !== -1) || !!isMatchPattern;
+				});
+	   		}
+	   		return !(!!hasAllTags && !!hasAllTags.length);
 	   	}
 	   	mdl.getUserLocale = function() { // return user locale from the URL
 	   		var html = document.getElementsByTagName('html')[0];

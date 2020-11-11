@@ -55,6 +55,52 @@ document.addEventListener('DOMContentLoaded', function() {
 ["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded.",
 ["zg().isAgentMemberOfAnyGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of any Group or Group name is matching the pattern",
 ["zg().isAgentMemberOfAllGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of all Groups or Group name is matching the pattern",
-["zg().setTicketFieldAttribbutes([{\"field_id\":\"request_description\",\"label\":\"MY FIELD LABEL\",\"help_text\":\"MY FIELD HELP TEXT\"}])"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
+["zg().setTicketFieldAttribbutes([{
+			"field_id":"request_description",
+			"label":"MY FIELD LABEL",
+			"help_text":"MY FIELD HELP TEXT"}
+		])
+		"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
 
+```
+
+## examples
+
+```
+zg().setTicketFieldAttribbutes([{
+	"field_id":"request_description",
+	"label":"MY DESCRPTION LABEL",
+	"help_text":"MY DESCRPTION HELP TEXT"
+},
+{
+	"field_id":"request_custom_fields_24156879",
+	"label":"MY FIELD LABEL",
+	"help_text":"MY FIELD HELP TEXT"
+},
+{
+	"field_id":"request_organization_id",
+	"label":"MY ORG FIELD LABEL",
+	"help_text":"MY ORG FIELD HELP TEXT"
+},
+
+{
+	"field_id":"request_custom_fields_23156796",
+	"label":"MY LABEL FOR TEXT",
+	"help_text":"MY HELP TEXT FOR TEXT"
+},
+{
+	"field_id":"request_collaborators_",
+	"label":"MY LABEL FOR CC",
+	"help_text":"MY HELP TEXT FOR CC"
+},
+{
+	"field_id":"request_issue_type_select",
+	"label":"MY LABEL FOR TICKET FORM",
+	"help_text":"MY HELP TEXT FOR TICKET FORM"
+},
+{
+	"field_id":"request_subject",
+	"label":"MY LABEL FOR SUBJECT",
+	"help_text":"MY HELP TEXT FOR SUBJECT"
+}]);
 ```

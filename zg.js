@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.7 | last updated: 2020-10-23
+	ver 1.0.8 | last updated: 2020-11-11
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.7 | last updated: 2020-10-23';
+		mdl.version = 'ver 1.0.8 | last updated: 2020-11-11';
 
 		mdl.help = function() {
 			console.table({
@@ -34,7 +34,10 @@ var zg = function() {
 							["zg().hideTicketFormIDs(['123','456'])"]				: "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form",
 							["zg().ifUrlContainsAny(['en','us'])"]					: "TRUE if either of the strings are available in the current URL. window.location.href is used to define the URL",
 							["zg().ifUrlContainsAll(['en','us'])"]					: "TRUE if all of the strings are available in the current URL. window.location.href is used to define the URL",
-							["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded."
+							["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded.",
+							["zg().isAgentMemberOfAnyGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of any Group or Group name is matching the pattern",
+							["zg().isAgentMemberOfAllGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of all Groups or Group name is matching the pattern",
+							["zg().setTicketFieldAttribbutes([{\"field_id\":\"request_description\",\"label\":\"MY FIELD LABEL\",\"help_text\":\"MY FIELD HELP TEXT\"}])"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
 						});
 
 		}
@@ -117,6 +120,55 @@ var zg = function() {
 	   		}
 	   		return !(!!hasAllTags && !!hasAllTags.length);
 	   	}
+	   	mdl.isAgentMemberOfAnyGroups = function(listOfAgentGroups) { // return TRUE if Agent visiting Help Center is a member of at least one Group
+	   		var hasGroups,
+	   			agentGroupNames,
+	   			h = HelpCenter,
+	   			hasHelpCenter = h && h.user && h.user.groups && h.user.groups.length;
+	   		
+	   		if (listOfAgentGroups && hasHelpCenter) {
+	   			agentGroupNames = h.user.groups.map(function(group) {
+	   				return group.name;
+	   			})
+	   			hasGroups = listOfAgentGroups.filter(function(n) {
+				    var isMatchPattern;
+	   				if (n.indexOf('/') > -1) {
+	   					var re = new RegExp(n.replace(/\//g, ''));
+	   					for (var i = 0; i < agentGroupNames.length; i++) {
+	   						if (re.test(agentGroupNames[i])) {
+	   							isMatchPattern = true;
+	   							break;
+	   						}
+	   					}
+	   				}
+				    return (agentGroupNames.indexOf(n) !== -1) || !!isMatchPattern;
+				});
+	   		}
+	   		return !!hasGroups && !!hasGroups.length;
+	   	}
+	   	mdl.isAgentMemberOfAllGroups = function(listOfAgentGroups) { // return TRUE if Agent visiting Help Center is a member of at all Groups
+	   		var hasGroups,
+	   			agentGroupNames,
+	   			h = HelpCenter,
+	   			hasHelpCenter = h && h.user && h.user.groups && h.user.groups.length;
+	   		
+	   		if (listOfAgentGroups && hasHelpCenter) {
+	   			agentGroupNames = h.user.groups.map(function(group) {
+	   				return group.name;
+	   			})
+	   			hasGroups = listOfAgentGroups.filter(function(n) {
+				    var isMatchPattern;
+	   				if (n.indexOf('/') > -1) {
+	   					var re = new RegExp(n.replace(/\//g, ''));
+	   					for (var i = 0; i < agentGroupNames.length; i++) {
+	   						if (re.test(agentGroupNames[i])) isMatchPattern = true;
+	   					}
+	   				}
+	   				return agentGroupNames && agentGroupNames.length && (agentGroupNames.indexOf(n) !== -1) || !!isMatchPattern;
+				});
+	   		}
+	   		return !!hasGroups && !!hasGroups.length && (hasGroups.length == listOfAgentGroups.length);
+	   	}
 	   	mdl.getUserLocale = function() { // return user locale from the URL
 	   		var html = document.getElementsByTagName('html')[0];
 			return html && html.attributes && html.attributes.lang && html.attributes.lang.value.toLowerCase();
@@ -160,7 +212,7 @@ var zg = function() {
 				}
 				hideFormIds(form_ids);
 			} else {
-				console.warn('ERROR: zg.js > hideTicketFormIDs no ticket form IDs were passed to hideTicketFormIDs function');
+				console.warn('ERROR: zg.js > hideTicketFormIDs no ticket form IDs were passed to hideTicketFormIDs function.\n');
 			}
 		}
 		mdl.ifUrlContainsAny = function(arrayOfString) { // check if any of passed atttributes are presented in the URL
@@ -177,7 +229,7 @@ var zg = function() {
 				} else if (typeof arrayOfString === 'string' || arrayOfString instanceof String) {
 					isUrlContainsAny = url.indexOf(arrayOfString) > -1;
 				} else {
-					console.warn('ERROR: zg.js > ifUrlContainsAny method received unexpected value. While Array of strings or a String is expected.')
+					console.warn('ERROR: zg.js > ifUrlContainsAny method received unexpected value. While Array of strings or a String is expected.\n')
 				}
 			}
 			return !!isUrlContainsAny;
@@ -197,7 +249,7 @@ var zg = function() {
 				} else if (typeof arrayOfString === 'string' || arrayOfString instanceof String) {
 					isUrlContainsAll = url.indexOf(arrayOfString) > -1;
 				} else {
-					console.warn('ERROR: zg.js > ifUrlContainsAll method received unexpected value. While Array of strings or a String is expected.')
+					console.warn('ERROR: zg.js > ifUrlContainsAll method received unexpected value. While Array of strings or a String is expected.\n')
 				}
 			}
 			return !!isUrlContainsAll;
@@ -206,10 +258,44 @@ var zg = function() {
 			try {
 				return HelpCenter && HelpCenter.user && HelpCenter.user.role != 'anonymous';
 			} catch(err) {
-				console.warn('ERROR: zg.js > isVisitorLogin method failed execution. Consider calling this method after Help Center papge is loaded.', err);
+				console.warn('ERROR: zg.js > isVisitorLogin method failed execution. Consider calling this method after Help Center page is loaded.\n', err);
 				return false;
 			}
 		}
+		mdl.setTicketFieldAttribbutes = function(fieldSettings) { // Set ticket field label and help text
+			// Tested with the following field id: request_description, request_subject, request_custom_fields_24156879, request_organization_id, request_collaborators_, request_issue_type_select
+	   		if (mdl.isTicketFormPage() && fieldSettings && fieldSettings.length) {
+	   			try {
+	   				for (var i = 0; i < fieldSettings.length; i++) {
+		   				var field_id = fieldSettings[i].field_id,
+		   					label = fieldSettings[i].label,
+		   					help_text = fieldSettings[i].help_text;
 
+		   				if (field_id) {
+		   					var field = document.getElementById(field_id);
+
+		   					if (field) {
+		   						var parent = (field_id == 'request_collaborators_') ? field.parentNode.parentNode.parentNode : field.parentNode,
+			   						helpText = parent.getElementsByTagName('P');
+		   					
+				   				if (label) parent.getElementsByTagName('LABEL')[0].innerHTML = label;
+				   				
+				   				if (help_text && helpText && helpText.length) {
+				   					helpText[0].innerHTML = help_text;
+				   				} else {
+				   					helpText = document.createElement('P');
+				   					helpText.id = field_id + '_hint';
+				   					helpText.innerHTML = help_text;
+				   					parent.appendChild(helpText);
+				   				}
+		   					}
+
+		   				}
+		   			}
+		   		} catch(err) {
+		   			console.warn('ERROR: zg.js > setTicketFieldAttribbutes method failed execution. Consider calling this method after Help Center page is loaded.\n', err);
+	   			}
+	   		}
+	   	}
 	   	return mdl;
 }

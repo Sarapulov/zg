@@ -1,6 +1,6 @@
 # zg
 	
-## ver 1.0.7 | last updated: 2020-10-23
+## ver 1.0.8 | last updated: 2020-11-11
 
 Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that contains a collection of useful methods that may help automating routine dev tasks.
 
@@ -15,7 +15,7 @@ For the latest version
 For more specific version
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg@1.0.7/zg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg@1.0.8/zg.min.js"></script>
 ```
 
 ## how to use
@@ -48,10 +48,13 @@ document.addEventListener('DOMContentLoaded', function() {
 ["zg().hasAllUserTag(['test','/office:/'])"]			: "TRUE if current user has all tags OR all tags are matching the pattern",
 ["zg().hasUserNoneOfTheseTags(['test','/office:/'])"]	: "TRUE if current user has none of tags OR no tags are matching the pattern",
 ["zg().getUserLocale()"]								: "return current user locale from Help Center HTML",
-["zg().getAllTicketFormIDs()"]							: "return all available ticket form IDs",
+["zg().getAllTicketFormIDs()"]							: "return all available ticket form IDs. Should be used on the new_request_page.hbs",
 ["zg().hideTicketFormIDs(['123','456'])"]				: "will hide listed ticket form IDs from the Ticket Form Selector excluding currrently selected ticket form",
 ["zg().ifUrlContainsAny(['en','us'])"]					: "TRUE if either of the strings are available in the current URL. window.location.href is used to define the URL",
 ["zg().ifUrlContainsAll(['en','us'])"]					: "TRUE if all of the strings are available in the current URL. window.location.href is used to define the URL",
-["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded."
+["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded.",
+["zg().isAgentMemberOfAnyGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of any Group or Group name is matching the pattern",
+["zg().isAgentMemberOfAllGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of all Groups or Group name is matching the pattern",
+["zg().setTicketFieldAttribbutes([{\"field_id\":\"request_description\",\"label\":\"MY FIELD LABEL\",\"help_text\":\"MY FIELD HELP TEXT\"}])"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
 
 ```

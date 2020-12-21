@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ["zg().moveFormFields([{\"field_classes_to_move\":[\"request_subject\",\"request_custom_fields_23156796\",\"upload-dropzone\",\"request_cc_emails\",\"request_organization_id\"],\"move_field_before_field\": true,\"anchor_field_class\":\"request_custom_fields_24278963\"}])"]: "Moves field from {field_classes_to_move} BEFORE or AFTER {anchor_field_class} field on Help Center contact form"
 ```
 
-## examples
+## setTicketFieldAttribbutes
 
 ```
 zg().setTicketFieldAttribbutes([{
@@ -105,16 +105,33 @@ zg().setTicketFieldAttribbutes([{
 }]);
 ```
 
+## moveFormFields
+
+Moves field from {field_classes_to_move} BEFORE or AFTER {anchor_field_class} field on Help Center contact form
+
+Fields will be moved in the order specified in {field_classes_to_move} attribute.
+
+`"move_field_before_field": true,` is optional and if TRUE the {field_classes_to_move} fields will be inserted BEFORE the {anchor_field_class}. Otherwise, {field_classes_to_move} fields will be inserted AFTER the {anchor_field_class}
+
+The function must be invoked on the page load event primarily because of CC field which appears with a delay.
+
+This method includes the check if the current page is a ticket form page (`zg().isTicketFormPage()`). So no need to do this check explicitly.
+
 ```
-zg().moveFormFields([
-	{
-		"field_classes_to_move":["request_subject"],
-		"move_field_before_field": true, // OPTIONAL
-		"anchor_field_class":"request_ticket_form_id"
-	},
-	{
-		"field_classes_to_move":["request_subject","request_custom_fields_23156796","upload-dropzone","request_cc_emails","request_organization_id"],
-		"anchor_field_class":"request_custom_fields_24278963"
-	}
-])
+// must be invoked on the page load primarily because of CC field which appears with a delay
+document.addEventListener('DOMContentLoaded', function() {
+
+	zg().moveFormFields([
+		{
+			"field_classes_to_move":["request_subject"],
+			"move_field_before_field": true,
+			"anchor_field_class":"request_ticket_form_id"
+		},
+		{
+			"field_classes_to_move":["request_subject","request_custom_fields_23156796","upload-dropzone","request_cc_emails","request_organization_id"],
+			"anchor_field_class":"request_custom_fields_24278963"
+		}
+	])
+
+})
 ```

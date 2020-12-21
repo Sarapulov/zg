@@ -117,6 +117,8 @@ The function must be invoked on the page load event primarily because of CC fiel
 
 This method includes the check if the current page is a ticket form page (`zg().isTicketFormPage()`). So no need to do this check explicitly.
 
+I've checked that on both Copenhagen v1 and v2 themes. Script works as expected. No jQuery required for this script to work.
+
 ```
 // must be invoked on the page load primarily because of CC field which appears with a delay
 document.addEventListener('DOMContentLoaded', function() {

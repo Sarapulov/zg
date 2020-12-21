@@ -2,7 +2,7 @@
 
 	# zg
 	
-	ver 1.0.8 | last updated: 2020-11-11
+	ver 1.0.9 | last updated: 2020-12-21
 
 	OVERVIEW:
 
@@ -16,7 +16,7 @@ var zg = function() {
 	
 		var mdl = {};
 
-		mdl.version = 'ver 1.0.8 | last updated: 2020-11-11';
+		mdl.version = 'ver 1.0.9 | last updated: 2020-12-21';
 
 		mdl.help = function() {
 			console.table({
@@ -37,7 +37,8 @@ var zg = function() {
 							["zg().isVisitorLogin()"]								: "TRUE if current visitor is login to Help Center. Should be called after page is loaded.",
 							["zg().isAgentMemberOfAnyGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of any Group or Group name is matching the pattern",
 							["zg().isAgentMemberOfAllGroups(['Group 1','/Group/'])"]: "TRUE if current Agent is a member of all Groups or Group name is matching the pattern",
-							["zg().setTicketFieldAttribbutes([{\"field_id\":\"request_description\",\"label\":\"MY FIELD LABEL\",\"help_text\":\"MY FIELD HELP TEXT\"}])"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
+							["zg().setTicketFieldAttribbutes([{\"field_id\":\"request_description\",\"label\":\"MY FIELD LABEL\",\"help_text\":\"MY FIELD HELP TEXT\"}])"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select",
+							["zg().moveFormFields([{\"field_classes_to_move\":[\"request_subject\",\"request_custom_fields_23156796\",\"upload-dropzone\",\"request_cc_emails\",\"request_organization_id\"],\"move_field_before_field\": true,\"anchor_field_class\":\"request_custom_fields_24278963\"}])"]: "Moves field from {field_classes_to_move} BEFORE or AFTER {anchor_field_class} field on Help Center contact form"
 						});
 
 		}
@@ -297,5 +298,46 @@ var zg = function() {
 	   			}
 	   		}
 	   	}
+	   	mdl.moveFormFields = function(config){ // move ticket form fields
+	   		if (mdl.isTicketFormPage()) {
+	   			if (config && config.length) {
+					for (var i = 0; i < config.length; i++) {
+						var fieldsToMove = config[i].field_classes_to_move;
+						var anchorField = getField(config[i].anchor_field_class);
+						var position = !!config[i].move_field_before_field;
+
+						if (anchorField && fieldsToMove.length) {
+							fieldsToMove = position ? fieldsToMove : fieldsToMove.reverse();
+							for (var k = 0; k < fieldsToMove.length; k++) {
+								var fieldToMove = getField(fieldsToMove[k]);
+								if (fieldToMove) moveField(anchorField,fieldToMove,position);
+							}
+						}
+					}
+
+				} else {
+					console.warn('ERROR: zg.js > moveFormFields is missing configuration\n');
+				}
+				function getField(fieldReference) { // get field object
+					if (!fieldReference) return null;
+
+					var field  = document.getElementsByClassName(fieldReference);
+
+					if (fieldReference == "request_cc_emails") {
+						// TODO: May need to check the field presence before handling as it appears with a delay
+					} else if (fieldReference == "upload-dropzone") {
+						return field = field ? field[0].parentNode : null;
+					}
+					return field ? field[0] : null;
+				}
+				function moveField(anchorField,fieldToMove,position) {
+					if (position) { // insert before
+						document.getElementById('new_request').insertBefore(fieldToMove, anchorField);	
+					} else { // insert after
+						anchorField.parentNode.insertBefore(fieldToMove, anchorField.nextSibling);
+					}
+				}
+	   		}
+		}
 	   	return mdl;
 }

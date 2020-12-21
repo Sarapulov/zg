@@ -1,6 +1,6 @@
 # zg
 	
-## ver 1.0.8 | last updated: 2020-11-11
+## ver 1.0.9 | last updated: 2020-12-21
 
 Nano JavaScript library for Zendesk Help Center (part of Zendesk Guide) that contains a collection of useful methods that may help automating routine dev tasks.
 
@@ -15,7 +15,7 @@ For the latest version
 For more specific version
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg@1.0.8/zg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/sarapulov/zg@1.0.9/zg.min.js"></script>
 ```
 
 ## how to use
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			"help_text":"MY FIELD HELP TEXT"}
 		])
 		"]: "Sets ticket field label and/or help text on a ticket form. tested with the following field ids: request_description, request_subject, request_custom_fields_XXXXXX, request_organization_id, request_collaborators_, request_issue_type_select"
-
+["zg().moveFormFields([{\"field_classes_to_move\":[\"request_subject\",\"request_custom_fields_23156796\",\"upload-dropzone\",\"request_cc_emails\",\"request_organization_id\"],\"move_field_before_field\": true,\"anchor_field_class\":\"request_custom_fields_24278963\"}])"]: "Moves field from {field_classes_to_move} BEFORE or AFTER {anchor_field_class} field on Help Center contact form"
 ```
 
 ## examples
@@ -103,4 +103,18 @@ zg().setTicketFieldAttribbutes([{
 	"label":"MY LABEL FOR SUBJECT",
 	"help_text":"MY HELP TEXT FOR SUBJECT"
 }]);
+```
+
+```
+zg().moveFormFields([
+	{
+		"field_classes_to_move":["request_subject"],
+		"move_field_before_field": true, // OPTIONAL
+		"anchor_field_class":"request_ticket_form_id"
+	},
+	{
+		"field_classes_to_move":["request_subject","request_custom_fields_23156796","upload-dropzone","request_cc_emails","request_organization_id"],
+		"anchor_field_class":"request_custom_fields_24278963"
+	}
+])
 ```
